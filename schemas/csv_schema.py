@@ -11,3 +11,9 @@ class CSVSchema(BaseModel):
     chunks: List[CSVData] = Field(..., description="List of all chunks of data in the CSV file")
     encoding: str = Field(default="utf-8", description="Encoding of the CSV file")
 
+
+class ExportRequest(BaseModel):
+    filename: str = 'dados_editados.csv'
+    encoding: str = 'utf-8'
+    delimiter: str = ','
+    data: List[dict]
