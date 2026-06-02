@@ -1,5 +1,5 @@
 from schemas import csv_schema
-from services import csv_upload, csv_download
+from services.csv_service import csv_upload, csv_download
 from fastapi import APIRouter, HTTPException, UploadFile, File, Response
 from pathlib import Path
 import io
@@ -8,7 +8,6 @@ router = APIRouter()
 
 @router.get('/', response_model=csv_schema.CSVSchema)
 async def get_csv_data():
-    # Placeholder for actual CSV data retrieval logic
     try:
         csv_data = {
             "filename": "example.csv",
@@ -40,6 +39,7 @@ async def upload_csv(file: UploadFile = File(...)):
         return {
             "filename": file.filename,
             "chunks": result_json["chunks"],
+            "encoding": "utf-8"
         }
     except UnicodeDecodeError:
         raise HTTPException(status_code=400, detail="Erro de decodificação. Certifique-se de que o arquivo está codificado em UTF-8.")
@@ -50,7 +50,7 @@ async def upload_csv(file: UploadFile = File(...)):
 @router.post('/download')
 async def download_csv(request: csv_schema.ExportRequest):
     try:
-        payload_dict = request.model.dump()
+        payload_dict = request.model_dump()
         csv_bytes = csv_download(payload_dict)
         headers = {
             "Content-Disposition": f'attachment; filename="{request.filename}"',

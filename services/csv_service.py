@@ -1,7 +1,7 @@
 import pandas as pd
 import io
 
-def csv_upload(buffer: io.bytesIO, chunk_rows: int = 100) -> dict:
+def csv_upload(buffer: io.BytesIO, chunk_rows: int = 100) -> dict:
 
     df_iterator = pd.read_csv(buffer, encoding='utf-8', chunksize=chunk_rows)
 

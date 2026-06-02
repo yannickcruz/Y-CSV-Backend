@@ -16,4 +16,4 @@ class ExportRequest(BaseModel):
     filename: str = 'dados_editados.csv'
     encoding: str = 'utf-8'
     delimiter: str = ','
-    data: List[dict]
+    chunks: List[CSVData]

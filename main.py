@@ -1,9 +1,21 @@
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from api.routers import csv_router
 import uvicorn
 
-MAX_File_SIZE = 20 * 1024 * 1024  
 app = FastAPI()
+app.include_router(csv_router.router)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+    allow_credentials=True,
+)
+
+MAX_File_SIZE = 20 * 1024 * 1024  
 
 @app.middleware("http")
 async def limit_file_size(request: Request, call_next):
@@ -18,4 +30,4 @@ async def limit_file_size(request: Request, call_next):
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return {"message": "Y-CSV API está rodando!"}
