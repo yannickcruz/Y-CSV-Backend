@@ -2,9 +2,13 @@ from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from api.routers import csv_router
+from core.configs import settings
 import uvicorn
 
-app = FastAPI()
+app = FastAPI(
+    title=settings.app_name,
+    version=settings.version,
+)
 app.include_router(csv_router.router)
 
 app.add_middleware(
@@ -31,3 +35,6 @@ async def limit_file_size(request: Request, call_next):
 @app.get("/")
 def read_root():
     return {"message": "Y-CSV API está rodando!"}
+
+if __name__ == "__main__":
+    uvicorn.run(app, host=settings.HOST, port=settings.PORT)
