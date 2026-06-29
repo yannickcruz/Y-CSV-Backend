@@ -33,9 +33,12 @@ async def upload_csv(file: UploadFile = File(...)):
         filename_end = Path(file.filename).suffix
         raise HTTPException(status_code=400, detail="O arquivo deve ser um CSV. O arquivo enviado é um: " + filename_end)
     try:
+        await file.seek(0)
         contents = await file.read()
         buffer = io.BytesIO(contents)
         result_json = csv_upload(buffer, chunk_rows=100)
+        buffer.close()
+        await file.close()
         return {
             "filename": file.filename,
             "chunks": result_json["chunks"],
